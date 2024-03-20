@@ -676,9 +676,12 @@ CREATE TABLE ImagenesNoticias (
     END;
 
 --Registra cuando se publico una noticia en la tabla cuando se entra un registro nuevo 
+
     CREATE OR REPLACE TRIGGER registrar_fecha_publicacion
     BEFORE INSERT ON Noticias
     FOR EACH ROW
     BEGIN
         :new.fecha_publicacion := SYSDATE;
     END;
+
+--------------------------------------------------- Paquetes  ----------------------------    
