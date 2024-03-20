@@ -375,7 +375,7 @@ CREATE TABLE ImagenesNoticias (
     SELECT * FROM Vista_Noticias_Calificaciones_Comentarios;
 
 
-------------------------------- Funciones  ----------------------------
+----------------------------------------------------------------- Funciones  ----------------------------
 
 -- Función para insertar un nuevo usuario
     CREATE OR REPLACE FUNCTION insertar_usuario(
@@ -643,7 +643,7 @@ CREATE TABLE ImagenesNoticias (
     END registrar_accion_seguimiento;
 
 
-------------------------------- Trigers  ----------------------------
+--------------------------------------------------------------- Trigers  ----------------------------
 
 --Actualizar ranking de noticias
     CREATE OR REPLACE TRIGGER actualizar_ranking_visitas
