@@ -684,4 +684,14 @@ CREATE TABLE ImagenesNoticias (
         :new.fecha_publicacion := SYSDATE;
     END;
 
---------------------------------------------------- Paquetes  ----------------------------    
+--------------------------------------------------- Procedimientos Almacenados  ----------------------------    
+--Registrar una visita a una noticia 
+CREATE OR REPLACE PROCEDURE SP_AgregarVisita(
+    p_noticia_id IN NUMBER
+)
+IS
+BEGIN
+    INSERT INTO Visitas (id_noticia, id_usuario, fecha_visita)
+    VALUES (p_noticia_id, NULL, SYSDATE);
+END SP_AgregarVisita;
+/
