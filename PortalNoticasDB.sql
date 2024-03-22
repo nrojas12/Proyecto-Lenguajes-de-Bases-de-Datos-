@@ -694,4 +694,3 @@ BEGIN
     INSERT INTO Visitas (id_noticia, id_usuario, fecha_visita)
     VALUES (p_noticia_id, NULL, SYSDATE);
 END SP_AgregarVisita;
-/
