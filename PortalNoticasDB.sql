@@ -715,5 +715,17 @@ BEGIN
     SELECT COUNT(*) INTO Usuarios_totales
     FROM USUARIOS
     WHERE DATE (Fecha_reg) = Fecha_hoy;
+
+--Crear procedimiento para saber cuantas noticias se han publicado el día de hoy
+
+CREATE PROCEDURE num_noticias_hoy(
+    OUT total_noticias INT;
+)
+BEGIN
+    DECLARE fecha_presente DATE;
+    SET fecha_presente = CURRENT DATE();
     
+    SELECT COUNT(*) INTO total_noticias
+    FROM Noticias
+    WHERE DATE(fecha_publicacion) = fecha_presente;
 END
