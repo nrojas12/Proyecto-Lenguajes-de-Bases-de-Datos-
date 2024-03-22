@@ -694,3 +694,26 @@ BEGIN
     INSERT INTO Visitas (id_noticia, id_usuario, fecha_visita)
     VALUES (p_noticia_id, NULL, SYSDATE);
 END SP_AgregarVisita;
+
+-- Crear Procedimiento de registro Newsletter
+
+CREATE PROCEDURE Newsletter_sub()
+BEGIN
+    DECLARE suscripciones_totales INT;
+    SELECT COUNT(*) INTO suscripciones_totales FROM USUARIOS
+    SELECT suscripciones_totales AS suscripciones_totales;
+END
+
+-- Crear procedimiento para mostrar cuantos usuarios se registraron durante el dia
+
+CREATE PROCEDURE
+BEGIN  
+    DECLARE Usuarios_totales;
+    DECLARE Fecha_hoy DATE;
+    SET Fecha_hoy = CURRENT DATE();
+    
+    SELECT COUNT(*) INTO Usuarios_totales
+    FROM USUARIOS
+    WHERE DATE (Fecha_reg) = Fecha_hoy;
+    
+END
