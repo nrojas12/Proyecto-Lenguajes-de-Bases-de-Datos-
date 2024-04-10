@@ -684,6 +684,15 @@ CREATE TABLE ImagenesNoticias (
         :new.fecha_publicacion := SYSDATE;
     END;
 
+--Contador de visitas en la tabla de Ranking
+    CREATE OR REPLACE TRIGGER incrementar_contador_visitas
+    AFTER INSERT ON Visitas
+    FOR EACH ROW
+    BEGIN
+        UPDATE Ranking
+        SET visitas = visitas + 1
+        WHERE id_noticia = :NEW.id_noticia;
+    END;
 --------------------------------------------------- Procedimientos Almacenados  ----------------------------    
 --Registrar una visita a una noticia 
 CREATE OR REPLACE PROCEDURE SP_AgregarVisita(
@@ -729,3 +738,74 @@ BEGIN
     FROM Noticias
     WHERE DATE(fecha_publicacion) = fecha_presente;
 END
+
+------------------------------------------------ Cursores ------------------------------------
+
+-- Cursor para obtener la lista de usuarios que han calificado una noticia
+    DECLARE
+        CURSOR calificaciones_cursor IS
+            SELECT id_usuario
+            FROM Calificaciones
+            WHERE id_noticia = :id_noticia;
+    BEGIN
+        FOR calificacion_rec IN calificaciones_cursor LOOP
+            DBMS_OUTPUT.PUT_LINE('Usuario que calificó la noticia: ' || calificacion_rec.id_usuario);
+        END LOOP;
+    END;
+
+-- Cursor para obtener la lista de usuarios que han visitado una noticia
+    DECLARE
+        CURSOR visitas_cursor IS
+            SELECT id_usuario
+            FROM Visitas
+            WHERE id_noticia = :id_noticia;
+    BEGIN
+        FOR visita_rec IN visitas_cursor LOOP
+            DBMS_OUTPUT.PUT_LINE('Usuario que visitó la noticia: ' || visita_rec.id_usuario);
+        END LOOP;
+    END;    
+
+-- Cursor para obtener la lista de usuarios que han comentado en una noticia
+    DECLARE
+        CURSOR comentarios_cursor IS
+            SELECT id_usuario
+            FROM Comentarios
+            WHERE id_noticia = :id_noticia;
+    BEGIN
+        FOR comentario_rec IN comentarios_cursor LOOP
+            DBMS_OUTPUT.PUT_LINE('Usuario que comentó en la noticia: ' || comentario_rec.id_usuario);
+        END LOOP;
+    END;    
+
+-- Cursor para obtener la lista de usuarios
+    DECLARE
+        CURSOR usuarios_cursor IS
+            SELECT id_usuario, nombre, correo
+            FROM Usuarios;
+    BEGIN
+        FOR usuario_rec IN usuarios_cursor LOOP
+            DBMS_OUTPUT.PUT_LINE('ID Usuario: ' || usuario_rec.id_usuario || ', Nombre: ' || usuario_rec.nombre || ', Correo: ' || usuario_rec.correo);
+        END LOOP;
+    END;
+
+-- Cursor para obtener la lista de temas
+    DECLARE
+        CURSOR temas_cursor IS
+            SELECT id_tema, nombre, descripcion
+            FROM Temas;
+    BEGIN
+        FOR tema_rec IN temas_cursor LOOP
+            DBMS_OUTPUT.PUT_LINE('ID Tema: ' || tema_rec.id_tema || ', Nombre: ' || tema_rec.nombre || ', Descripción: ' || tema_rec.descripcion);
+        END LOOP;
+    END;
+
+-- Cursor para obtener la lista de noticias
+    DECLARE
+        CURSOR noticias_cursor IS
+            SELECT id_noticia, titulo, contenido, fecha_publicacion, id_tema, id_subtema, id_usuario
+            FROM Noticias;
+    BEGIN
+        FOR noticia_rec IN noticias_cursor LOOP
+            DBMS_OUTPUT.PUT_LINE('ID Noticia: ' || noticia_rec.id_noticia || ', Título: ' || noticia_rec.titulo || ', Contenido: ' || noticia_rec.contenido || ', Fecha de Publicación: ' || noticia_rec.fecha_publicacion || ', ID Tema: ' || noticia_rec.id_tema || ', ID Subtema: ' || noticia_rec.id_subtema || ', ID Usuario: ' || noticia_rec.id_usuario);
+        END LOOP;
+    END;
