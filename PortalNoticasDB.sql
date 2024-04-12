@@ -739,6 +739,8 @@ BEGIN
     WHERE DATE(fecha_publicacion) = fecha_presente;
 END
 
+
+--*****************Por incluir en oracle sql******************
 ------------------------------------------------ Cursores ------------------------------------
 
 -- Cursor para obtener la lista de usuarios que han calificado una noticia
