@@ -16,7 +16,7 @@ include("connection.php");
     -->
     <html>
     <head>
-        <title>Veterinaria San Martin de Porras</title>
+        <title>Noticias</title>
         <link rel="stylesheet" href="css/index.css"/>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,39 +48,46 @@ include("connection.php");
             </div>
         </header>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create">
-  Nuevo
-</button>
+         <!--Carrusel-->
 
-<div class="table-responsive">
-    <table class="table">
-        <thead class="table table-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Correo</th>
-                <th scope="col">Telefono</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php  foreach($citas as $cita){ ?>
-            <tr class="">
-                <td scope="row"><?php echo $cita['id']; ?></td>
-                <td><?php echo $cita['nombre']; ?></td>
-                <td><?php echo $cita['correo']; ?></td>
-                <td><?php echo $cita['telefono']; ?></td>
-                <td>
-                <a href="edit2.php?id=<?php echo $cita['id']; ?>" class="btn btn-success">Editar</a>
-                <a href="index2.php?id=<?php echo $cita['id']; ?>" class="btn btn-danger">Eliminar</a>
-                </td>
-            </tr>
-            <?php } ?>
-        </tbody>
-    </table>
-</div>
-<?php include("create.php"); ?>
+         <div id="carouselExampleCaptions" class="carousel slide">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="img/box.jpg" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Informe Tica</h5>
+                  <p>Siempre con usted las 24 horas.</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="img/tecnologia 1.jfif" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Informe Tica</h5>
+                  <p>Siempre con usted las 24 horas.</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="img/internacionales 1.jpg" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Informe Tica</h5>
+                  <p>Siempre con usted las 24 horas.</p>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
 
 
 

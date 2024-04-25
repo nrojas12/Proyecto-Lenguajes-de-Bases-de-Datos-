@@ -1,21 +1,36 @@
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>NOTICIERO</title>
+<?php
 
+// este index es para mostrar en donde se encuentra el crud se puede cambiar el nombre 
+//------------------------------------------------------------//
+
+include("connection.php");
+
+?>
+
+<!DOCTYPE html>
+
+
+    <!--
+    Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+    Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+    -->
+    <html>
+    <head>
+        <title>Noticias</title>
+        <link rel="stylesheet" href="css/index.css"/>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/estilos.css" as="style">
+        <link rel="stylesheet" href="css/estilos.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" >
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+</head>
+<body>
 
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" >
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>    
-    </head>
-    <body>
-        <header>
+
+<header>
             <div class="container-fluid bcontent">
                 <nav class="navbar navbar-expand-sm navbar-light bg-light">
                     <a class="navbar-brand" href="#">
@@ -25,7 +40,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <li class="nav-item"><a class="nav-link Sombreado Sombreado-Dos Tipo-Letra-Tamaño" href="index.html">Inicio</a></li>
                             <li class="nav-item"><a class="nav-link Sombreado Sombreado-Dos Tipo-Letra-Tamaño" href="deportes.html">Deportes</a></li>
                             <li class="nav-item"><a class="nav-link Sombreado Sombreado-Dos Tipo-Letra-Tamaño" href="#">Tecnología</a></li>
-                            <li class="nav-item"><a class="nav-link Sombreado Sombreado-Dos Tipo-Letra-Tamaño" href="internacionales.html">Internacionales</a></li>
+                            <li class="nav-item"><a class="nav-link Sombreado Sombreado-Dos Tipo-Letra-Tamaño" href="#">Internacionales</a></li>
 
                         </ul>
                     </div>
@@ -33,9 +48,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
         </header>
 
-        <!--CARTS-->
+         <!--CARTS-->
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col">
               <div class="card h-100">
                 <img src="img/basquet.jpg" class="card-img-top" alt="basquet">
@@ -123,8 +138,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
           </div>
 
 
-         <!-- Footer -->
-         <footer class="text-center text-white"  style="background-color: #06243f">
+
+
+        <!-- Footer -->
+        <footer class="text-center text-white"  style="background-color: #06243f">
             <div class="container p-4">
                 <section class="mb-4">
                     <h1> </h1>
@@ -160,6 +177,5 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 © 2024 Copyright
             </div>
         </footer>
-
         </body>
         </html>
