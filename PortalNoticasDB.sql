@@ -2787,3 +2787,150 @@ BEGIN
     COMMIT; 
 END;
 
+CREATE OR REPLACE PACKAGE PaqueteContarEstadisticas AS
+    PROCEDURE SP_ContarUsuariosHoy;
+END PaqueteContarEstadisticas;
+/
+
+CREATE OR REPLACE PACKAGE BODY PaqueteContarEstadisticas AS
+    PROCEDURE SP_ContarUsuariosHoy AS
+        Usuarios_totales INT;
+        Fecha_hoy DATE;
+    BEGIN
+        Fecha_hoy := SYSDATE; -- Utiliza SYSDATE para obtener la fecha actual
+        
+        SELECT COUNT(*)
+        INTO Usuarios_totales
+        FROM Usuarios
+        WHERE TRUNC(fecha_registro) = TRUNC(Fecha_hoy); -- TRUNC para comparar solo la fecha sin la hora
+    
+        DBMS_OUTPUT.PUT_LINE('Usuarios registrados hoy: ' || Usuarios_totales);
+    END SP_ContarUsuariosHoy;
+END PaqueteContarEstadisticas;
+/
+
+BEGIN
+    PaqueteContarEstadisticas.SP_ContarUsuariosHoy;
+END;
+
+--*******************************************************************************
+--Paquete obtencion de datos (otros)
+-- Definición del paquete para obtener datos de la base de datos
+CREATE OR REPLACE PACKAGE paquete_obtencion_de_datos AS
+    -- Función para obtener el número de visitas de una noticia
+    FUNCTION obtener_numero_visitas(
+        p_id_noticia IN NUMBER
+    ) RETURN NUMBER;
+
+    -- Función para obtener el contenido de una noticia
+    FUNCTION obtener_contenido_noticia(
+        p_id_noticia IN NUMBER
+    ) RETURN CLOB;
+
+    -- Función para obtener la descripción de un tema dado su ID
+    FUNCTION obtener_descripcion_tema(
+        p_id_tema IN NUMBER
+    ) RETURN VARCHAR2;
+
+    -- Función para obtener el nombre de un usuario dado su ID
+    FUNCTION obtener_nombre_usuario(
+        p_id_usuario IN NUMBER
+    ) RETURN VARCHAR2;
+END paquete_obtencion_de_datos;
+/
+
+-- Implementación del paquete
+CREATE OR REPLACE PACKAGE BODY paquete_obtencion_de_datos AS
+    -- Función para obtener el número de visitas de una noticia
+    FUNCTION obtener_numero_visitas(
+        p_id_noticia IN NUMBER
+    ) RETURN NUMBER IS
+        v_numero_visitas NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_numero_visitas FROM Visitas WHERE id_noticia = p_id_noticia;
+        RETURN v_numero_visitas;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN 0;
+        WHEN OTHERS THEN
+            RETURN -1; -- Indicador de error
+    END obtener_numero_visitas;
+
+    -- Función para obtener el contenido de una noticia
+    FUNCTION obtener_contenido_noticia(
+        p_id_noticia IN NUMBER
+    ) RETURN CLOB IS
+        v_contenido Noticias.contenido%TYPE;
+    BEGIN
+        SELECT contenido INTO v_contenido FROM Noticias WHERE id_noticia = p_id_noticia;
+        RETURN v_contenido;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN NULL;
+        WHEN OTHERS THEN
+            RETURN 'Error al obtener el contenido de la noticia';
+    END obtener_contenido_noticia;
+
+    -- Función para obtener la descripción de un tema dado su ID
+    FUNCTION obtener_descripcion_tema(
+        p_id_tema IN NUMBER
+    ) RETURN VARCHAR2 IS
+        v_descripcion Temas.descripcion%TYPE;
+    BEGIN
+        SELECT descripcion INTO v_descripcion FROM Temas WHERE id_tema = p_id_tema;
+        RETURN v_descripcion;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN 'Tema no encontrado';
+        WHEN OTHERS THEN
+            RETURN 'Error al recuperar la descripción del tema';
+    END obtener_descripcion_tema;
+
+    -- Función para obtener el nombre de un usuario dado su ID
+    FUNCTION obtener_nombre_usuario(
+        p_id_usuario IN NUMBER
+    ) RETURN VARCHAR2 IS
+        v_nombre Usuarios.nombre%TYPE;
+    BEGIN
+        SELECT nombre INTO v_nombre FROM Usuarios WHERE id_usuario = p_id_usuario;
+        RETURN v_nombre;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN 'Usuario no encontrado';
+        WHEN OTHERS THEN
+            RETURN 'Error al recuperar el nombre del usuario';
+    END obtener_nombre_usuario;
+END paquete_obtencion_de_datos;
+/
+
+DECLARE
+    v_numero_visitas NUMBER;
+BEGIN
+    v_numero_visitas := paquete_obtencion_de_datos.obtener_numero_visitas(p_id_noticia => 6); 
+    DBMS_OUTPUT.PUT_LINE('Número de visitas: ' || v_numero_visitas);
+END;
+
+DECLARE
+    v_contenido CLOB;
+BEGIN
+    v_contenido := paquete_obtencion_de_datos.obtener_contenido_noticia(p_id_noticia => 6); 
+    DBMS_OUTPUT.PUT_LINE('Contenido de la noticia:');
+    DBMS_OUTPUT.PUT_LINE(v_contenido);
+END;
+
+DECLARE
+    v_descripcion VARCHAR2(100);
+BEGIN
+    v_descripcion := paquete_obtencion_de_datos.obtener_descripcion_tema(p_id_tema => 2); 
+    DBMS_OUTPUT.PUT_LINE('Descripción del tema: ' || v_descripcion);
+END;
+
+
+DECLARE
+    v_nombre_usuario VARCHAR2(100);
+BEGIN
+    v_nombre_usuario := paquete_obtencion_de_datos.obtener_nombre_usuario(p_id_usuario => 1);
+    DBMS_OUTPUT.PUT_LINE('Nombre del usuario: ' || v_nombre_usuario);
+END;
+
+

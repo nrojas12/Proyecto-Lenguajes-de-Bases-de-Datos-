@@ -2,7 +2,7 @@
 
 EXEC PaqueteGestionUsuarios.SP_AgregarUsuario('Andres', 'andres@gmail.com', '123', 'No', SYSDATE);
 
-EXEC PaqueteGestionUsuarios.SP_ActualizarUsuario(1, 'Juanito Perez', 'juanito.perez@email.com', 'nuevacontraseña', 'Si', SYSDATE);
+EXEC PaqueteGestionUsuarios.SP_ActualizarUsuario(1, 'Juanito Perez', 'juanito.perez@email.com', 'nuevacontraseï¿½a', 'Si', SYSDATE);
 
 EXEC PaqueteGestionUsuarios.SP_EliminarUsuario(9); -- ID del usuario a eliminar
 
@@ -30,7 +30,7 @@ BEGIN
     v_resultado := PaqueteGestionNoticias.insertar_noticia(
         p_id_noticia => 7,
         p_titulo => '',
-        p_contenido => 'El Saprissa le ganó al Alajuelense...',
+        p_contenido => 'El Saprissa le ganï¿½ al Alajuelense...',
         p_fecha_publicacion => SYSDATE,
         p_id_tema => 2,
         p_id_subtema => 3,
@@ -40,13 +40,13 @@ BEGIN
 END;
 
 INSERT INTO Noticias (id_noticia, titulo, contenido, fecha_publicacion, id_tema, id_subtema, id_usuario)
-VALUES (7, '', 'El Saprissa le ganó al Alajuelense...', SYSDATE, 2, 3, 1);
+VALUES (7, '', 'El Saprissa le ganï¿½ al Alajuelense...', SYSDATE, 2, 3, 1);
 
 BEGIN
     PaqueteGestionNoticias.SP_ActualizarNoticia(
         p_id_noticia => 6,
-        p_titulo => 'Expo Móvil 2024',
-        p_contenido => 'Variedad de carros en marcas como Toyota, Nissan, Ford, Chevrolet y muchas más...',
+        p_titulo => 'Expo Mï¿½vil 2024',
+        p_contenido => 'Variedad de carros en marcas como Toyota, Nissan, Ford, Chevrolet y muchas mï¿½s...',
         p_fecha_publicacion => SYSDATE,
         p_id_tema => 3,
         p_id_subtema => 4
@@ -86,7 +86,7 @@ DECLARE
     v_resultado VARCHAR2(100);
     
 BEGIN
-    v_resultado := PaqueteGestionTemas.insertar_tema(p_id_tema => 1, p_nombre => 'Ciencia y Tecnologia', p_descripcion => 'Descripción del nuevo tema');
+    v_resultado := PaqueteGestionTemas.insertar_tema(p_id_tema => 1, p_nombre => 'Ciencia y Tecnologia', p_descripcion => 'Descripciï¿½n del nuevo tema');
     DBMS_OUTPUT.PUT_LINE(v_resultado);
 END;
 
@@ -105,7 +105,7 @@ BEGIN
     v_resultado := PaqueteGestionSubtemas.insertar_subtema(
         p_id_subtema => 1,
         p_nombre => 'Nuevo Subtema',
-        p_descripcion => 'Descripción del nuevo subtema',
+        p_descripcion => 'Descripciï¿½n del nuevo subtema',
         p_id_tema => 2
     );
     DBMS_OUTPUT.PUT_LINE(v_resultado);
@@ -156,5 +156,35 @@ BEGIN
     PaqueteContarEstadisticas.SP_ContarUsuariosHoy;
 END;
 
+-- ************** Paquete Contar Estadisticas ************************
+DECLARE
+    v_numero_visitas NUMBER;
+BEGIN
+    v_numero_visitas := paquete_obtencion_de_datos.obtener_numero_visitas(p_id_noticia => 6); 
+    DBMS_OUTPUT.PUT_LINE('NÃºmero de visitas: ' || v_numero_visitas);
+END;
+
+DECLARE
+    v_contenido CLOB;
+BEGIN
+    v_contenido := paquete_obtencion_de_datos.obtener_contenido_noticia(p_id_noticia => 6); 
+    DBMS_OUTPUT.PUT_LINE('Contenido de la noticia:');
+    DBMS_OUTPUT.PUT_LINE(v_contenido);
+END;
+
+DECLARE
+    v_descripcion VARCHAR2(100);
+BEGIN
+    v_descripcion := paquete_obtencion_de_datos.obtener_descripcion_tema(p_id_tema => 2); 
+    DBMS_OUTPUT.PUT_LINE('DescripciÃ³n del tema: ' || v_descripcion);
+END;
+
+
+DECLARE
+    v_nombre_usuario VARCHAR2(100);
+BEGIN
+    v_nombre_usuario := paquete_obtencion_de_datos.obtener_nombre_usuario(p_id_usuario => 1);
+    DBMS_OUTPUT.PUT_LINE('Nombre del usuario: ' || v_nombre_usuario);
+END;
 
     
