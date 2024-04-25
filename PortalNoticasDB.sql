@@ -693,6 +693,17 @@ CREATE TABLE ImagenesNoticias (
         SET visitas = visitas + 1
         WHERE id_noticia = :NEW.id_noticia;
     END;
+
+--Mantener el promedio de calificaciones
+    CREATE OR REPLACE TRIGGER mantener_promedio_calificaciones
+    AFTER INSERT OR DELETE ON Calificaciones
+    FOR EACH ROW
+    BEGIN
+        UPDATE Ranking
+        SET promedio_calificaciones = (SELECT AVG(calificacion) FROM Calificaciones WHERE id_noticia = :NEW.id_noticia)
+        WHERE id_noticia = :NEW.id_noticia;
+    END;
+
 --------------------------------------------------- Procedimientos Almacenados  ----------------------------    
 --Registrar una visita a una noticia 
 CREATE OR REPLACE PROCEDURE SP_AgregarVisita(
@@ -739,8 +750,6 @@ BEGIN
     WHERE DATE(fecha_publicacion) = fecha_presente;
 END
 
-
---*****************Por incluir en oracle sql******************
 ------------------------------------------------ Cursores ------------------------------------
 
 -- Cursor para obtener la lista de usuarios que han calificado una noticia
@@ -801,6 +810,27 @@ END
         END LOOP;
     END;
 
+--Cursor para obtener el número total de temas
+    DECLARE
+    total_temas NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO total_temas FROM Temas;
+        DBMS_OUTPUT.PUT_LINE('Total de temas: ' || total_temas);
+    END;
+
+--Cursor para obtener un tema específico por ID
+    DECLARE
+        v_tema_id NUMBER := 1; -- ID del tema que deseas obtener
+        v_nombre_temas VARCHAR2(100);
+        v_descripcion_temas VARCHAR2(255);
+    BEGIN
+        SELECT nombre, descripcion INTO v_nombre_temas, v_descripcion_temas
+        FROM Temas
+        WHERE id_tema = v_tema_id;
+        DBMS_OUTPUT.PUT_LINE('Nombre del tema con ID ' || v_tema_id || ': ' || v_nombre_temas);
+        DBMS_OUTPUT.PUT_LINE('Descripción del tema: ' || v_descripcion_temas);
+    END;
+
 -- Cursor para obtener la lista de noticias
     DECLARE
         CURSOR noticias_cursor IS
@@ -811,3 +841,140 @@ END
             DBMS_OUTPUT.PUT_LINE('ID Noticia: ' || noticia_rec.id_noticia || ', Título: ' || noticia_rec.titulo || ', Contenido: ' || noticia_rec.contenido || ', Fecha de Publicación: ' || noticia_rec.fecha_publicacion || ', ID Tema: ' || noticia_rec.id_tema || ', ID Subtema: ' || noticia_rec.id_subtema || ', ID Usuario: ' || noticia_rec.id_usuario);
         END LOOP;
     END;
+
+--Cursor para obtener noticias por tema
+    DECLARE
+        v_tema_id NUMBER := 1; -- ID del tema que deseas filtrar
+        CURSOR noticias_tema_cursor IS
+            SELECT * FROM Noticias WHERE id_tema = v_tema_id;
+        noticia_tema_rec Noticias%ROWTYPE;
+    BEGIN
+        OPEN noticias_tema_cursor;
+        LOOP
+            FETCH noticias_tema_cursor INTO noticia_tema_rec;
+            EXIT WHEN noticias_tema_cursor%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('ID Noticia: ' || noticia_tema_rec.id_noticia || ', Título: ' || noticia_tema_rec.titulo || ', Contenido: ' || noticia_tema_rec.contenido || ', Fecha de publicación: ' || noticia_tema_rec.fecha_publicacion || ', ID Tema: ' || noticia_tema_rec.id_tema || ', ID Subtema: ' || noticia_tema_rec.id_subtema || ', ID Usuario: ' || noticia_tema_rec.id_usuario);
+        END LOOP;
+        CLOSE noticias_tema_cursor;
+    END;
+
+--Cursor para obtener noticias por usuario
+    DECLARE
+        v_usuario_id NUMBER := 1; -- ID del usuario que deseas filtrar
+        CURSOR noticias_usuario_cursor IS
+            SELECT * FROM Noticias WHERE id_usuario = v_usuario_id;
+        noticia_usuario_rec Noticias%ROWTYPE;
+    BEGIN
+        OPEN noticias_usuario_cursor;
+        LOOP
+            FETCH noticias_usuario_cursor INTO noticia_usuario_rec;
+            EXIT WHEN noticias_usuario_cursor%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('ID Noticia: ' || noticia_usuario_rec.id_noticia || ', Título: ' || noticia_usuario_rec.titulo || ', Contenido: ' || noticia_usuario_rec.contenido || ', Fecha de publicación: ' || noticia_usuario_rec.fecha_publicacion || ', ID Tema: ' || noticia_usuario_rec.id_tema || ', ID Subtema: ' || noticia_usuario_rec.id_subtema || ', ID Usuario: ' || noticia_usuario_rec.id_usuario);
+        END LOOP;
+        CLOSE noticias_usuario_cursor;
+    END;
+
+
+--Cursor para obtener la lista de subtemas   
+    DECLARE
+    CURSOR subtemas_cursor IS
+        SELECT id_subtema, nombre, descripcion, id_tema FROM Subtemas;
+    subtema_rec subtemas_cursor%ROWTYPE;
+    BEGIN
+        OPEN subtemas_cursor;
+        LOOP
+            FETCH subtemas_cursor INTO subtema_rec;
+            EXIT WHEN subtemas_cursor%NOTFOUND; /*determina cuándo salir del bucle de lectura del cursor*/
+            DBMS_OUTPUT.PUT_LINE('ID Subtema: ' || subtema_rec.id_subtema || ', Nombre: ' || subtema_rec.nombre || ', Descripción: ' || subtema_rec.descripcion || ', ID Tema: ' || subtema_rec.id_tema);
+        END LOOP;
+        CLOSE subtemas_cursor;
+    END;
+
+--Cursor para obtener el número total de subtemas    
+    DECLARE
+    total_subtemas NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO total_subtemas FROM Subtemas;
+        DBMS_OUTPUT.PUT_LINE('Total de subtemas: ' || total_subtemas);
+    END;
+
+--Cursor para obtener un subtema específico por ID    
+    DECLARE
+        v_subtema_id NUMBER := 2; -- ID del subtema que deseas obtener
+        v_nombre_subtema VARCHAR2(100);
+        v_descripcion_subtema VARCHAR2(255);
+        v_id_tema_subtema NUMBER;
+    BEGIN
+        SELECT nombre, descripcion, id_tema INTO v_nombre_subtema, v_descripcion_subtema, v_id_tema_subtema
+        FROM Subtemas
+        WHERE id_subtema = v_subtema_id;
+        DBMS_OUTPUT.PUT_LINE('Nombre del subtema con ID ' || v_subtema_id || ': ' || v_nombre_subtema);
+        DBMS_OUTPUT.PUT_LINE('Descripción del subtema: ' || v_descripcion_subtema);
+        DBMS_OUTPUT.PUT_LINE('ID del tema asociado al subtema: ' || v_id_tema_subtema);
+    END;
+
+
+--Cursor para obtener la lista de calificaciones
+    DECLARE
+    CURSOR calificaciones_cursor IS
+        SELECT id_calificacion, id_noticia, id_usuario, calificacion FROM Calificaciones;
+    calificacion_rec calificaciones_cursor%ROWTYPE;
+    BEGIN
+        OPEN calificaciones_cursor;
+        LOOP
+            FETCH calificaciones_cursor INTO calificacion_rec;
+            EXIT WHEN calificaciones_cursor%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('ID Calificación: ' || calificacion_rec.id_calificacion || ', ID Noticia: ' || calificacion_rec.id_noticia || ', ID Usuario: ' || calificacion_rec.id_usuario || ', Calificación: ' || calificacion_rec.calificacion);
+        END LOOP;
+        CLOSE calificaciones_cursor;
+    END;
+    
+--Cursor para obtener calificaciones por noticia
+    DECLARE
+        v_noticia_id NUMBER := 1; 
+        CURSOR calificaciones_noticia_cursor IS
+            SELECT * FROM Calificaciones WHERE id_noticia = v_noticia_id;
+        calificacion_noticia_rec Calificaciones%ROWTYPE;
+    BEGIN
+        OPEN calificaciones_noticia_cursor;
+        LOOP
+            FETCH calificaciones_noticia_cursor INTO calificacion_noticia_rec;
+            EXIT WHEN calificaciones_noticia_cursor%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('ID Calificación: ' || calificacion_noticia_rec.id_calificacion || ', ID Noticia: ' || calificacion_noticia_rec.id_noticia || ', ID Usuario: ' || calificacion_noticia_rec.id_usuario || ', Calificación: ' || calificacion_noticia_rec.calificacion);
+        END LOOP;
+        CLOSE calificaciones_noticia_cursor;
+    END;
+
+--Cursor para obtener todas las visitas
+    DECLARE
+    CURSOR visitas_cursor IS
+        SELECT * FROM Visitas;
+    visita_rec Visitas%ROWTYPE;
+    BEGIN
+        OPEN visitas_cursor;
+        LOOP
+            FETCH visitas_cursor INTO visita_rec;
+            EXIT WHEN visitas_cursor%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('ID Visita: ' || visita_rec.id_visita || ', ID Noticia: ' || visita_rec.id_noticia || ', ID Usuario: ' || visita_rec.id_usuario || ', Fecha de visita: ' || visita_rec.fecha_visita);
+        END LOOP;
+        CLOSE visitas_cursor;
+    END;
+
+--Cursor para obtener visitas por noticia
+    DECLARE
+        v_usuario_id NUMBER := 2; 
+        CURSOR visitas_usuario_cursor IS
+            SELECT * FROM Visitas WHERE id_usuario = v_usuario_id;
+        visita_usuario_rec Visitas%ROWTYPE;
+    BEGIN
+        OPEN visitas_usuario_cursor;
+        LOOP
+            FETCH visitas_usuario_cursor INTO visita_usuario_rec;
+            EXIT WHEN visitas_usuario_cursor%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('ID Visita: ' || visita_usuario_rec.id_visita || ', ID Noticia: ' || visita_usuario_rec.id_noticia || ', ID Usuario: ' || visita_usuario_rec.id_usuario || ', Fecha de visita: ' || visita_usuario_rec.fecha_visita);
+        END LOOP;
+        CLOSE visitas_usuario_cursor;
+    END;
+
+
+
